@@ -76,7 +76,7 @@ export default class Home extends Vue {
     힌디어: 'hi',
     스페인어: 'es',
     프랑스어: 'fr',
-    de: '독일어',
+    독일어: 'de',
     pt: '포르투갈어',
     베트남어: 'vi',
     인도네시아어: 'id',
