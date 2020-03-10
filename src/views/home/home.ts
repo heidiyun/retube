@@ -83,7 +83,7 @@ export default class Home extends Vue {
     페르시아어: 'fa',
     아랍어: 'ar',
     미얀마어: 'mm',
-    th: '태국어',
+    태국어: 'th',
     ru: '러시아어',
     it: '이탈리아어',
   };
