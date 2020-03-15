@@ -89,7 +89,6 @@ export default class Home extends Vue {
   };
 
   private get entites() {
-    console.log('entitie', this.keywords);
     return this.keywords;
   }
 
