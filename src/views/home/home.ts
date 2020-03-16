@@ -169,7 +169,6 @@ export default class Home extends Vue {
 
     if (channelId) {
       this.channelId = channelId;
-      console.log('dlksjdf', this.channelId);
     } else {
       const index = this.inputText.indexOf('v=');
       const index2 = this.inputText.indexOf('&');
