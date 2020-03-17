@@ -448,8 +448,6 @@ export default class Home extends Vue {
       maxFontSize: 25,
       minFontSize: 5,
       seedColors: ['#999999'],
-
-      //  default is 'right angled','single','right angled','multiple'
     };
     this.tagCloud.setOptions(options);
     // tagCloud.setOptions(opt:Options);
