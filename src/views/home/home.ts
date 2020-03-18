@@ -479,9 +479,6 @@ export default class Home extends Vue {
 
     this.tagCloud.setData(tags);
 
-    // this.langTypes.unshift('all');
-
-    // }
 
     if (this.sentiments.neutral) {
       this.percentageOfSenti.push(this.sentiments.neutral.length);
