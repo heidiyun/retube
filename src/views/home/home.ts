@@ -510,7 +510,6 @@ export default class Home extends Vue {
 
   private async translateComment(commentInfo: any) {
     if (this.isTranslate) {
-      // this.translatedText = commentInfo.comment.snippet.textDisplay;
       this.isTranslate = false;
       return;
     }
