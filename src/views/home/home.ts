@@ -479,7 +479,6 @@ export default class Home extends Vue {
 
     this.tagCloud.setData(tags);
 
-
     if (this.sentiments.neutral) {
       this.percentageOfSenti.push(this.sentiments.neutral.length);
     } else {
@@ -542,7 +541,6 @@ export default class Home extends Vue {
   }
 
   private get displayLangTypes() {
-    console.log('lang');
     console.log(this.langTypes);
     this.langTypes.unshift('전체');
     return this.langTypes;
