@@ -555,7 +555,6 @@ export default class Home extends Vue {
   }
 
   private showCommentByLangType() {
-    console.log(this.selectedLang);
     if (this.selectedLang === '전체') {
       this.displayComments = this.comments;
     } else {
