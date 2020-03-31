@@ -572,32 +572,6 @@ export default class Home extends Vue {
       firebase.initializeApp(firebaseConfig);
     }
 
-    // const element: HTMLElement = <HTMLElement>(
-    //   document.getElementById('cloud-canvas')
-    // );
-    // let tagCloud = new TagCloud(element);
-
-    // let options: Options = {
-    //   orientation: 'single',
-    //   maxFontSize: 25,
-    //   minFontSize: 5,
-    //   seedColors: ['#999999'],
-
-    //   //  default is 'right angled','single','right angled','multiple'
-    // };
-    // tagCloud.setOptions(options);
-    // // tagCloud.setOptions(opt:Options);
-
-    // let tags = [];
-    // for (let i = 0; i < 100; i++) {
-    //   tags.push({
-    //     value: ~~(Math.random() * 10000) / 100,
-    //     text: '공부' + i,
-    //   });
-    // }
-
-    // tagCloud.setData(tags);
-
     if (this.$store.getters.src !== undefined) {
       const channelId = this.$store.getters.src.split('/')[4];
       this.onSearch(channelId);
