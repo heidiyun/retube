@@ -576,7 +576,6 @@ export default class Home extends Vue {
       const channelId = this.$store.getters.src.split('/')[4];
       this.onSearch(channelId);
     } else if (this.$store.getters.searchText !== undefined) {
-      console.log('dkdk');
       this.inputText = this.$store.getters.searchText;
       this.onSearch();
     }
