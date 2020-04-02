@@ -579,13 +579,5 @@ export default class Home extends Vue {
       this.inputText = this.$store.getters.searchText;
       this.onSearch();
     }
-
-    // const ref = firebase.database().ref('comments/');
-    // ref.once('child_added', (snapshot) => {
-    //   snapshot.forEach((s) => {
-    //     console.log(s.key);
-    //     console.log(s.val);
-    //   });
-    // });
   }
 }
