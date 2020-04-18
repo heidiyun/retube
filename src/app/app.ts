@@ -9,6 +9,6 @@ Vue.use(Antd);
 @Component({})
 export default class App extends Vue {
   private mounted() {
-    
+    // block
   }
 }

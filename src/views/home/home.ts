@@ -47,7 +47,6 @@ export default class Home extends Vue {
       }
     );
 
-    console.log(response.data);
     this.videoHtml = response.data.items[0].player.embedHtml;
 
     let nextPageToken = '';
@@ -69,13 +68,12 @@ export default class Home extends Vue {
       }
     );
 
-    console.log(response2.data);
     nextPageToken = response2.data.nextPageToken;
 
-    //@ts-ignore
+    // @ts-ignore
     response2.data.items.forEach(async (item) => {
       const parentId = item.snippet.topLevelComment.id;
-      let replies = await axios.get(
+      const replies = await axios.get(
         'https://www.googleapis.com/youtube/v3/comments',
         {
           params: {
@@ -86,8 +84,6 @@ export default class Home extends Vue {
           },
         }
       );
-
-      console.log('alkdjfa;j');
 
       // firebase
       //   .firestore()
@@ -104,18 +100,18 @@ export default class Home extends Vue {
           comment: item.snippet.topLevelComment.snippet.textDisplay,
         });
 
-      let a = {
+      const commentInfo = {
         comment: item,
         replies: replies.data.items,
       };
-      //@ts-ignore
-      this.comments.push(a);
+      // @ts-ignore
+      this.comments.push(commentInfo);
     });
 
     // }
   }
 
-  public async mounted() {
+  private async mounted() {
     firebase.initializeApp(firebaseConfig);
   }
 }
