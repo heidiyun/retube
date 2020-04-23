@@ -12,6 +12,7 @@ export default class Home extends Vue {
   private showAll: string = '';
   private showReply: string = '';
   private commentsHeight: number[] = [];
+  private key = '';
 
   private onSearch() {
     const index = this.inputText.indexOf('v=');
@@ -38,7 +39,7 @@ export default class Home extends Vue {
       'https://www.googleapis.com/youtube/v3/videos',
       {
         params: {
-          key: '',
+          key: this.key,
           part: 'snippet, statistics, player',
           id: `${this.channelId}`,
           fields:
@@ -56,7 +57,7 @@ export default class Home extends Vue {
       'https://www.googleapis.com/youtube/v3/commentThreads',
       {
         params: {
-          key: '',
+          key: this.key,
           part: 'snippet, replies',
           videoId: `${this.channelId}`,
           pageToken: `${nextPageToken}`,
@@ -77,7 +78,7 @@ export default class Home extends Vue {
         'https://www.googleapis.com/youtube/v3/comments',
         {
           params: {
-            key: '',
+            key: this.key,
             part: 'snippet',
             parentId: `${parentId}`,
             fields: 'items(snippet)',
@@ -113,5 +114,13 @@ export default class Home extends Vue {
 
   private async mounted() {
     firebase.initializeApp(firebaseConfig);
+    const ref = firebase.database().ref('comments/');
+    ref.once('child_added', (snapshot) => {
+      snapshot.forEach((s) => {
+        console.log(s.key);
+        console.log(s.val);
+      });
+    });
   }
 }
+
