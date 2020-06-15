@@ -2,6 +2,10 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+// Instantiates a client
+
+// Run request
+
 let query = '안녕';
 
 // if (process.env.NODE_ENV === 'development') {
@@ -67,12 +71,111 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   var api_url = 'https://openapi.naver.com/v1/papago/detectLangs';
+  var request = require('request');
+
+  var options = {
+    url: api_url,
+    form: { query: req.query.text },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
+      'X-Naver-Client-Id': '',
+      'X-Naver-Client-Secret': '',
+    },
+  };
+
+  function post() {
+    return new Promise((resolve, reject) => {
+      request.post(options, (error, response, body) => {
+        if (!error && response.statusCode === 200) {
+          resolve(body);
+          // res.send(body);
+        } else {
+          reject(error);
+          // console.log('error = ' + response.statusCode);
+        }
+      });
+    });
+  }
+
+  const result = await post();
+
+  res.send(result);
+});
+
+const widgets = functions.https.onRequest(app);
+
+const makeUppercase = functions.database
+  .ref('/comments/{pushId}/{etag}/comment')
+  .onCreate((snapshot, context) => {
+    // Grab the current value of what was written to the Realtime Database.
+    const original = snapshot.val();
+    console.log('Uppercasing', context.params.pushId, original);
+    let query = original;
+    let lang = '';
+
+    // app.get('/', async (req, res) => {
+    //   var api_url = 'https://openapi.naver.com/v1/papago/detectLangs';
+    //   var request = require('request');
+    //   var options = {
+    //     url: api_url,
+    //     form: { query: query },
+    //     headers: {
+    //       'Access-Control-Allow-Origin': '*',
+    //       'Access-Control-Allow-Methods':
+    //         'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+    //       'Access-Control-Allow-Headers':
+    //         'X-Requested-With, content-type, Authorization',
+    //       'X-Naver-Client-Id': '',
+    //       'X-Naver-Client-Secret': '',
+    //     },
+    //   };
+
+    //   function post() {
+    //     return new Promise((resolve, reject) => {
+    //       request.post(options, (error, response, body) => {
+    //         if (!error && response.statusCode === 200) {
+    //           resolve(body);
+    //           // res.send(body);
+    //         } else {
+    //           reject(error);
+    //           // console.log('error = ' + response.statusCode);
+    //         }
+    //       });
+    //     });
+    //   }
+
+    //   const result = await post();
+    //   lang = result;
+    // });
+    while (lang !== '') {
+      //dfsf
+    }
+
+    // You must return a Promise when performing asynchronous tasks inside a Functions such as
+    // writing to the Firebase Realtime Database.
+    // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
+    return snapshot.ref.parent.child('lang').set(lang);
+  });
+
+const app2 = express();
+
+app2.use(
+  cors({
+    origin: true,
+  })
+);
+
+app2.get('/', (req, res) => {
+  var api_url = 'https://openapi.naver.com/v1/papago/n2mt';
   var request = require('request');
   var options = {
     url: api_url,
-    form: { query: query },
+    form: { source: req.query.source, target: 'ko', text: req.query.text },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -85,7 +188,6 @@ app.get('/', (req, res) => {
   request.post(options, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       res.writeHead(200, { 'Content-Type': 'text/json;charset=utf-8' });
-
       res.end(body);
     } else {
       res.status(response.statusCode).end();
@@ -94,48 +196,115 @@ app.get('/', (req, res) => {
   });
 });
 
-const widgets = functions.https.onRequest(app);
+const translate = functions.https.onRequest(app2);
+const app3 = express();
 
-exports.makeUppercase = functions.database
-  .ref('/comments/{pushId}/{etag}/comment')
-  .onCreate((snapshot, context) => {
-    // Grab the current value of what was written to the Realtime Database.
-    const original = snapshot.val();
-    console.log('Uppercasing', context.params.pushId, original);
-    let query = original;
-    let lang = '';
-    app.get('/', (req, res) => {
-      var api_url = 'https://openapi.naver.com/v1/papago/detectLangs';
-      var request = require('request');
-      var options = {
-        url: api_url,
-        form: { query: query },
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods':
-            'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers':
-            'X-Requested-With, content-type, Authorization',
-          'X-Naver-Client-Id': '',
-          'X-Naver-Client-Secret': '',
-        },
+app3.use(
+  cors({
+    origin: true,
+  })
+);
+
+var corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
+// app3.get('/', cors(corsOptions), async (req, res) => {
+//   const language = require('@google-cloud/language');
+
+//   const client = new language.LanguageServiceClient();
+
+//   const text = req.query.text;
+
+//   const document = {
+//     content: text,
+//     type: 'PLAIN_TEXT',
+//   };
+//   const [result] = await client.analyzeSentiment({ document: document });
+//   const sentiment = result.documentSentiment;
+
+//   res.end(sentiment);
+// });
+
+// const naturalLanguage = functions.https.onRequest(app3);
+
+const cors2 = require('cors');
+const corsHandler = cors({ origin: true });
+
+const getEntity = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
+    const language = require('@google-cloud/language');
+    const client = new language.LanguageServiceClient();
+    const text = req.query.text;
+
+    const document = {
+      content: text,
+      type: 'PLAIN_TEXT',
+    };
+
+    // Detects entities in the document
+    const [result] = await client.analyzeEntities({ document });
+
+    const entities = result.entities;
+    const data = entities.map((entity) => {
+      return {
+        name: entity.name,
+        type: entity.type,
       };
-      request.post(options, (error, response, body) => {
-        if (!error && response.statusCode === 200) {
-          lang = body.langCode;
-        } else {
-          console.log('error = ' + response.statusCode);
-        }
-      });
     });
 
-    // You must return a Promise when performing asynchronous tasks inside a Functions such as
-    // writing to the Firebase Realtime Database.
-    // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
-    return snapshot.ref.parent.child('lang').set(lang);
-  });
+    res.send(data);
 
-// module.exports = {
-//   makeUppercase,
-//   b,
-// };
+    console.log('Entities:');
+    entities.forEach((entity) => {
+      console.log(entity.name);
+      console.log(` - Type: ${entity.type}, Salience: ${entity.salience}`);
+      if (entity.metadata && entity.metadata.wikipedia_url) {
+        console.log(` - Wikipedia URL: ${entity.metadata.wikipedia_url}`);
+      }
+    });
+  });
+});
+
+const naturalLanguage = functions.https.onRequest(async (request, response) => {
+  corsHandler(request, response, async () => {
+    const language = require('@google-cloud/language');
+
+    const client = new language.LanguageServiceClient();
+
+    const text = request.query.text;
+
+    const document = {
+      content: text,
+      type: 'PLAIN_TEXT',
+    };
+    const [result] = await client.analyzeSentiment({ document: document });
+    const sentiment = result.documentSentiment;
+
+    let emotion = '';
+    if (sentiment.score <= 1.0 && sentiment.score >= 0.25) {
+      emotion = 'positive';
+    } else if (sentiment.score >= -0.25 && sentiment.score <= 0.25) {
+      emotion = 'neutral';
+    } else {
+      emotion = 'negative';
+    }
+    response.send(emotion);
+
+    console.log(result);
+    console.log(result.sentences);
+    console.log(`Text: ${text}`);
+    console.log(`Sentiment score: ${sentiment.score}`);
+    console.log(`Sentiment magnitude: ${sentiment.magnitude}`);
+  });
+});
+
+module.exports = {
+  widgets,
+  translate,
+  naturalLanguage,
+  getEntity,
+};

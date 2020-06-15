@@ -1,23 +1,157 @@
-.video {
-  width: 100%;
-  height: 300px;
-}
+.home-container {
+  display: flex;
+  justify-content: space-between;
 
-.comment-layout {
-  width: 100%;
-  height: calc(100vh - 400px);
-  overflow-y: auto;
+  .video {
+    width: 940px;
+    margin-top: 8px;
+    .video-title {
+      width: 890px;
+      font-size: 20px !important;
+      font-weight: 600;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-right: 4px;
+    }
+    .video-info {
+      display: flex;
+      justify-content: space-between;
+      width: 890px;
+    }
+    .tag-container {
+      display: flex;
+      width: 890px;
+      // height: 30px;
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        display: none !important; // 윈도우 크롬 등
+      }
 
-  .comment-container {
-    border-bottom: 1px solid green;
-    .comment {
+      .tag {
+        &:hover {
+          cursor: pointer;
+        }
+        // white-space: nowrap;
+      }
+    }
+    .video-list {
       width: 100%;
-      min-height: fit-content;
-      max-height: 80px;
+      height: fit-content;
       overflow: hidden;
 
-      &[show] {
-        max-height: fit-content;
+      .video-list-item {
+        display: flex;
+        width: 100%;
+        height: 210px;
+        margin: 4px 0px;
+        padding: 4px 4px;
+        cursor: pointer;
+
+        .video {
+          width: 350px;
+          height: 100%;
+        }
+
+        .description {
+          width: calc(100% - 350px);
+          padding: 4px 12px;
+
+          .title {
+            font-weight: 600;
+          }
+
+          .name-container {
+            display: flex;
+          }
+          .explanation {
+            width: 100%;
+            height: 44px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+
+  .comment-info-container {
+    width: calc(100% - 940px);
+    height: 1200px;
+    .spinner {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .comment-analysis-layout {
+      width: 100%;
+      height: 10px;
+      overflow: hidden;
+      transition: height 0.15s ease-out;
+
+      &[displayed] {
+        height: fit-content;
+        transition: height 0.15s ease-in;
+      }
+      .pie-chart-container {
+        display: flex;
+      }
+    }
+
+    .comment-layout {
+      width: 100%;
+      height: 570px;
+      overflow-y: auto;
+
+      .comment-container {
+        padding-left: 26px;
+        padding-bottom: 26px;
+
+        &[reply] {
+          padding-top: 8px;
+        }
+
+        .comment {
+          display: flex;
+          min-height: fit-content;
+          max-height: 80px;
+          overflow: hidden;
+          .image {
+            width: 34px;
+            height: 34px;
+          }
+          .text-line {
+            margin-left: 18px;
+            width: 100%;
+            .name {
+              width: calc(100% - 50px);
+              height: 16px;
+            }
+            .text {
+              width: calc(100% - 50px);
+            }
+          }
+
+          &[show] {
+            max-height: fit-content;
+          }
+        }
+
+        .optional-button-layout {
+          display: flex;
+          .optional-button {
+            margin-top: 2px;
+            margin-left: 52px;
+            color: gray;
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+          }
+        }
       }
     }
   }

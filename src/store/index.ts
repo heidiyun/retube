@@ -3,13 +3,32 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export interface State {
+  src: string | undefined;
+  searchText: string | undefined;
+}
+
+export default new Vuex.Store<State>({
   state: {
+    src: undefined,
+    searchText: undefined,
   },
   mutations: {
+    setSrc(state, payload) {
+      state.src = payload;
+    },
+    setSearchText(state, payload) {
+      state.searchText = payload;
+    },
   },
-  actions: {
+  getters: {
+    src(state) {
+      return state.src;
+    },
+    searchText(state) {
+      return state.searchText;
+    },
   },
-  modules: {
-  },
+  actions: {},
+  modules: {},
 });
