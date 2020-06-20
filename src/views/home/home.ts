@@ -306,7 +306,7 @@ export default class Home extends Vue {
         );
 
         const lang = await axios.get(
-          'http://localhost:5001/re-tube-272909/us-central1/widgets',
+          'http://localhost:5001/re-tube-272909/us-central1/detectLangs',
           {
             params: {
               text: item.snippet.topLevelComment.snippet.textOriginal,

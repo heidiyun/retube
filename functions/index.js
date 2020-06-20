@@ -57,6 +57,8 @@ const someMethod = functions.https.onRequest((req, res) => {
 
 */
 
+
+
 const helloWorld = functions.https.onRequest((request, response) => {
   response.send('Hello from Firebase!');
 });
@@ -107,16 +109,53 @@ app.get('/', async (req, res) => {
   res.send(result);
 });
 
-const widgets = functions.https.onRequest(app);
+const detectLangs = functions.https.onRequest(app);
+
+const registerLangs = functions.firestore
+  .document('/comments/{etag}')
+  .onCreate(async (snapshot, context) => {
+    const text = snapshot.data().text;
+    let langCode;
+    try {
+      const result = await axios.get(
+          'https://us-central1-re-tube.cloudfunctions.net/detectLangs',
+          {
+            params: {
+              text: text,
+            },
+          });
+      langCode = result.data.langCode;
+    } catch (e) {
+      console.error('[Failed to detect language]', e);
+    }
+    
+    try {
+      await snapshot.ref.set({
+          langCode : langCode,
+          createdAt : new Date()
+        });
+    } catch (e) {
+      console.error('Failed to save language code]', e);
+    }
+  // 호출 성공시 Functions가 로그를 남기므로 별도로 성공 로그 기록하지 않음.
+  });
 
 const makeUppercase = functions.database
   .ref('/comments/{pushId}/{etag}/comment')
-  .onCreate((snapshot, context) => {
+  .onCreate(async (snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
     const original = snapshot.val();
     console.log('Uppercasing', context.params.pushId, original);
     let query = original;
-    let lang = '';
+
+    const lang = await axios.get(
+          'http://localhost:5001/re-tube-272909/us-central1/widgets',
+          {
+            params: {
+              text: query,
+            },
+          }
+        );
 
     // app.get('/', async (req, res) => {
     //   var api_url = 'https://openapi.naver.com/v1/papago/detectLangs';
@@ -170,6 +209,11 @@ app2.use(
   })
 );
 
+// 'Access-Control-Allow-Origin': '*',
+//       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+//       'Access-Control-Allow-Headers':
+//         'X-Requested-With, content-type, Authorization',
+
 app2.get('/', (req, res) => {
   var api_url = 'https://openapi.naver.com/v1/papago/n2mt';
   var request = require('request');
@@ -177,10 +221,6 @@ app2.get('/', (req, res) => {
     url: api_url,
     form: { source: req.query.source, target: 'ko', text: req.query.text },
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers':
-        'X-Requested-With, content-type, Authorization',
       'X-Naver-Client-Id': '',
       'X-Naver-Client-Secret': '',
     },
@@ -303,7 +343,8 @@ const naturalLanguage = functions.https.onRequest(async (request, response) => {
 });
 
 module.exports = {
-  widgets,
+  detectLangs,
+  registerLangs,
   translate,
   naturalLanguage,
   getEntity,
